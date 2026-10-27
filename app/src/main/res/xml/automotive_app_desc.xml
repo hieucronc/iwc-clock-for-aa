@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<automotiveApp>
+    <!-- Declares compatibility with Android Auto head units like Mercedes W205 COMAND/Audio 20 -->
+    <uses name="template" />
+</automotiveApp>

@@ -1,0 +1,15 @@
+<resources>
+    <!-- Base Application Theme -->
+    <style name="Theme.MercedesMinimalClock" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/cockpit_black</item>
+        <item name="android:navigationBarColor">@color/cockpit_black</item>
+        <item name="android:windowBackground">@color/cockpit_black</item>
+    </style>
+
+    <!-- Immersive Fullscreen Automotive Cockpit Theme -->
+    <style name="Theme.MercedesMinimalClock.Fullscreen" parent="Theme.MercedesMinimalClock">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:keepScreenOn">true</item>
+    </style>
+</resources>

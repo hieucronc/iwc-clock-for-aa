@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Mercedes Clock</string>
+    <string name="clock_style_analog">Analog (IWC Inspired)</string>
+    <string name="clock_style_digital">Digital (Mercedes Instrument)</string>
+    <string name="settings_title">Cockpit Clock Settings</string>
+    <string name="time_format_12">12-Hour</string>
+    <string name="time_format_24">24-Hour</string>
+    <string name="show_seconds">Show Seconds Hand / Ticks</string>
+    <string name="show_date">Show Calendar Date</string>
+    <string name="theme_black">Classic IWC Black</string>
+    <string name="theme_midnight">Midnight Blue (Le Petit Prince)</string>
+    <string name="theme_amg_silver">AMG Silver Rhodium</string>
+    <string name="show_logo">Show IWC Schaffhausen Logo</string>
+    <string name="show_lume">Luminous Indices and Hands</string>
+    <string name="settings_action">Settings</string>
+    <string name="theme_title">Dial Theme</string>
+    <string name="auto_connected">Connected to Mercedes W205 Display</string>
+    <string name="auto_surface_ready">Android Auto Display Initialized</string>
+</resources>

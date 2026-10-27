@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cockpit instrument palette -->
+    <color name="cockpit_black">#08090A</color>
+    <color name="cockpit_midnight">#060B14</color>
+    <color name="dial_warm_ivory">#F4EFE6</color>
+    <color name="dial_indices_dim">#8E9299</color>
+    <color name="dial_silver_accent">#C8CBD0</color>
+    <color name="dial_champagne_accent">#D4AF37</color>
+    <color name="seconds_mercedes_red">#C23B33</color>
+    <color name="seconds_silver">#E2E6EC</color>
+    <color name="bezel_ring">#1A1D24</color>
+    <color name="bezel_inner">#101216</color>
+</resources>

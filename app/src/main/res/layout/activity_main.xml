@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cockpit_black">
+
+    <!-- Direction A: IWC-Inspired Mechanical Analog Watch View -->
+    <com.mercedes.minimalclock.IwcAnalogClockView
+        android:id="@+id/analogClockView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+
+    <!-- Direction B: Mercedes Minimal Digital Instrument View -->
+    <com.mercedes.minimalclock.MercedesDigitalClockView
+        android:id="@+id/digitalClockView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>
