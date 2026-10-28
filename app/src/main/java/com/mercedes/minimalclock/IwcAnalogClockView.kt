@@ -10,8 +10,7 @@ import android.view.View
 import java.util.*
 
 /**
- * Direction A: IWC-Inspired Mechanical Watch View for Phone Display.
- * Uses shared [IwcClockPainter] for authentic Mercedes W205 Saddle Clock experience.
+ * Analog clock view for the phone display, using the shared analog face painter.
  */
 class IwcAnalogClockView @JvmOverloads constructor(
     context: Context,

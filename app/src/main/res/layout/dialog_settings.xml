@@ -1,243 +1,365 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/bezel_inner"
-    android:fillViewport="true">
-
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:background="@color/bezel_inner">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_title"
-        android:textColor="@color/dial_warm_ivory"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Clock Style Selection -->
-    <RadioGroup
-        android:id="@+id/rgClockStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-
-        <RadioButton
-            android:id="@+id/rbAnalog"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clock_style_analog"
-            android:textColor="@color/dial_warm_ivory"/>
-
-        <RadioButton
-            android:id="@+id/rbDigital"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clock_style_digital"
-            android:textColor="@color/dial_warm_ivory"/>
-    </RadioGroup>
-
-    <!-- Dial Theme Selection -->
-    <TextView
-        android:id="@+id/labelTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/theme_title"
-        android:textColor="@color/dial_warm_ivory"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <RadioGroup
-        android:id="@+id/rgTheme"
+    <!-- FROZEN TOP HEADER: Title & Sticky Live Clock Preview -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginBottom="16dp">
+        android:gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:background="#0A0C10"
+        android:elevation="6dp">
 
-        <RadioButton
-            android:id="@+id/rbThemeBlack"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/theme_black"
-            android:textColor="@color/dial_warm_ivory"/>
+            android:text="@string/settings_title"
+            android:textColor="@color/dial_warm_ivory"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
 
-        <RadioButton
-            android:id="@+id/rbThemeMidnight"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/theme_midnight"
-            android:textColor="@color/dial_warm_ivory"/>
+            android:text="LIVE PREVIEW"
+            android:textColor="#8E9299"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.2"
+            android:layout_marginBottom="6dp"/>
 
-        <RadioButton
-            android:id="@+id/rbThemeAmg"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center">
+
+            <com.mercedes.minimalclock.IwcAnalogClockView
+                android:id="@+id/previewAnalogClock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
+
+            <com.mercedes.minimalclock.MercedesDigitalClockView
+                android:id="@+id/previewDigitalClock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- SCROLLABLE SETTINGS OPTIONS -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/theme_amg_silver"
-            android:textColor="@color/dial_warm_ivory"/>
-    </RadioGroup>
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <!-- 24-Hour Format Toggle -->
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch24Hour"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/time_format_24"
-        android:textColor="@color/dial_warm_ivory"
-        android:layout_marginBottom="12dp"/>
+            <!-- Clock Style Selection -->
+            <RadioGroup
+                android:id="@+id/rgClockStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
 
-    <!-- Seconds Hand / Ticks Toggle -->
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchSeconds"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/show_seconds"
-        android:textColor="@color/dial_warm_ivory"
-        android:layout_marginBottom="12dp"/>
+                <RadioButton
+                    android:id="@+id/rbAnalog"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/clock_style_analog"
+                    android:textColor="@color/dial_warm_ivory"/>
 
-    <!-- Calendar Date Toggle -->
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/show_date"
-        android:textColor="@color/dial_warm_ivory"
-        android:layout_marginBottom="12dp"/>
+                <RadioButton
+                    android:id="@+id/rbDigital"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/clock_style_digital"
+                    android:textColor="@color/dial_warm_ivory"/>
+            </RadioGroup>
 
-    <TextView
-        android:id="@+id/labelLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dial Logo"
-        android:textColor="@color/dial_warm_ivory"
-        android:textStyle="bold" />
+            <TextView android:id="@+id/labelAnalogFaceStyle" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Analog face style" android:textColor="@color/dial_warm_ivory" android:textStyle="bold" />
+            <RadioGroup android:id="@+id/rgAnalogFaceStyle" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="12dp">
+                <RadioButton android:id="@+id/rbAnalogFaceMercedes" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Mercedes" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbAnalogFaceModern" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Modern" android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
 
-    <RadioGroup
-        android:id="@+id/rgLogo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="12dp">
-        <RadioButton
-            android:id="@+id/rbLogoNone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Off"
-            android:textColor="@color/dial_warm_ivory" />
-        <RadioButton
-            android:id="@+id/rbLogoIwc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="IWC"
-            android:textColor="@color/dial_warm_ivory" />
-        <RadioButton
-            android:id="@+id/rbLogoMercedes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Mercedes"
-            android:textColor="@color/dial_warm_ivory" />
-    </RadioGroup>
+            <!-- Mercedes-specific analog options -->
+            <TextView android:id="@+id/labelMercedesSettings" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Mercedes style settings" android:textColor="@color/dial_warm_ivory" android:textStyle="bold" />
+            <TextView
+                android:id="@+id/labelTheme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/theme_title"
+                android:textColor="@color/dial_warm_ivory"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchMinuteRing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Show Minute Ring"
-        android:textColor="@color/dial_warm_ivory"
-        android:layout_marginBottom="8dp" />
+            <RadioGroup
+                android:id="@+id/rgTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
 
-    <TextView
-        android:id="@+id/labelBezel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Minute Ring Color"
-        android:textColor="@color/dial_warm_ivory"
-        android:textStyle="bold" />
+                <RadioButton
+                    android:id="@+id/rbThemeBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_black"
+                    android:textColor="@color/dial_warm_ivory"/>
 
-    <RadioGroup
-        android:id="@+id/rgBezelColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="12dp">
-        <RadioButton android:id="@+id/rbBezelRed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Red" android:textColor="@color/dial_warm_ivory" />
-        <RadioButton android:id="@+id/rbBezelSilver" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Silver" android:textColor="@color/dial_warm_ivory" />
-        <RadioButton android:id="@+id/rbBezelBlue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Blue" android:textColor="@color/dial_warm_ivory" />
-        <RadioButton android:id="@+id/rbBezelGold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Gold" android:textColor="@color/dial_warm_ivory" />
-        <RadioButton android:id="@+id/rbBezelWhite" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="White" android:textColor="@color/dial_warm_ivory" />
-    </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rbThemeMidnight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_midnight"
+                    android:textColor="@color/dial_warm_ivory"/>
 
-    <!-- Luminescent Glow Toggle -->
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchLume"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/show_lume"
-        android:textColor="@color/dial_warm_ivory"
-        android:layout_marginBottom="16dp"/>
+                <RadioButton
+                    android:id="@+id/rbThemeAmg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_amg_silver"
+                    android:textColor="@color/dial_warm_ivory"/>
+            </RadioGroup>
 
-    <TextView
-        android:id="@+id/labelLumeColor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lume Color"
-        android:textColor="@color/dial_warm_ivory"
-        android:textStyle="bold" />
+            <!-- 24-Hour Format Toggle -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch24Hour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/time_format_24"
+                android:textColor="@color/dial_warm_ivory"
+                android:layout_marginBottom="12dp"/>
 
-    <RadioGroup
-        android:id="@+id/rgLumeColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="12dp">
-        <RadioButton android:id="@+id/rbLumeGreen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Emerald green" android:textColor="@color/dial_warm_ivory" />
-        <RadioButton android:id="@+id/rbLumeBlue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ice blue" android:textColor="@color/dial_warm_ivory" />
-        <RadioButton android:id="@+id/rbLumeSolar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Solar amber" android:textColor="@color/dial_warm_ivory" />
-    </RadioGroup>
+            <!-- Seconds Hand / Ticks Toggle -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchSeconds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_seconds"
+                android:textColor="@color/dial_warm_ivory"
+                android:layout_marginBottom="12dp"/>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchWeather"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Show local weather (uses device location)"
-        android:textColor="@color/dial_warm_ivory"
-        android:layout_marginBottom="12dp" />
+            <!-- Calendar Date Toggle -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_date"
+                android:textColor="@color/dial_warm_ivory"
+                android:layout_marginBottom="12dp"/>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchWeatherIcon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Show Weather Icon"
-        android:textColor="@color/dial_warm_ivory" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchTachometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show driving information panel"
+                android:textColor="@color/dial_warm_ivory"
+                android:layout_marginBottom="16dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTelemetrySettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose telemetry fields..."
+                android:layout_marginBottom="16dp" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchWeatherCondition"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Show Weather Condition"
-        android:textColor="@color/dial_warm_ivory" />
+            <TextView
+                android:id="@+id/labelDigitalCustomize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Digital clock appearance"
+                android:textColor="@color/dial_warm_ivory"
+                android:textStyle="bold" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchDigitalBold" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Bold" android:textColor="@color/dial_warm_ivory" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchDigitalItalic" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Italic" android:textColor="@color/dial_warm_ivory" />
+            <TextView android:id="@+id/labelDigitalFont" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Font" android:textColor="@color/dial_warm_ivory" />
+            <RadioGroup android:id="@+id/rgDigitalFont" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <RadioButton android:id="@+id/rbFontSans" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sans" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbFontMono" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mono" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbFontSerif" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Serif" android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
+            <TextView android:id="@+id/labelDigitalColor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="All time parts color" android:textColor="@color/dial_warm_ivory" />
+            <RadioGroup android:id="@+id/rgDigitalColor" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <RadioButton android:id="@+id/rbColorIvory" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ivory" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbColorWhite" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="White" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbColorCyan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cyan" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbColorAmber" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Amber" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbColorRed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Red" android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
+            <TextView android:id="@+id/labelTimePartColors" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Time colors" android:textColor="@color/dial_warm_ivory" />
+            <TextView android:id="@+id/labelHourColor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hour" android:textColor="@color/dial_warm_ivory" />
+            <Spinner android:id="@+id/spinnerHourColor" android:layout_width="match_parent" android:layout_height="wrap_content" android:entries="@array/digital_color_options" />
+            <TextView android:id="@+id/labelMinuteColor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Minute" android:textColor="@color/dial_warm_ivory" />
+            <Spinner android:id="@+id/spinnerMinuteColor" android:layout_width="match_parent" android:layout_height="wrap_content" android:entries="@array/digital_color_options" />
+            <TextView android:id="@+id/labelSecondColor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Seconds" android:textColor="@color/dial_warm_ivory" />
+            <Spinner android:id="@+id/spinnerSecondColor" android:layout_width="match_parent" android:layout_height="wrap_content" android:entries="@array/digital_color_options" />
+            <TextView android:id="@+id/labelSeparatorColor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Colon" android:textColor="@color/dial_warm_ivory" />
+            <Spinner android:id="@+id/spinnerSeparatorColor" android:layout_width="match_parent" android:layout_height="wrap_content" android:entries="@array/digital_color_options" />
+            <TextView android:id="@+id/labelDigitalPattern" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Background pattern" android:textColor="@color/dial_warm_ivory" />
+            <RadioGroup android:id="@+id/rgDigitalPattern" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginBottom="14dp">
+                <RadioButton android:id="@+id/rbPatternSolid" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Solid" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbPatternGrid" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Grid" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbPatternCarbon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Carbon" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbPatternScanlines" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scanlines" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbPatternBlueprint" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Blueprint" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbPatternDots" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dot matrix" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbPatternHexagon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hexagon" android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
 
-    <RadioGroup
-        android:id="@+id/rgWeatherUnit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="12dp">
-        <RadioButton android:id="@+id/rbCelsius" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Celsius" android:textColor="@color/dial_warm_ivory" />
-        <RadioButton android:id="@+id/rbFahrenheit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Fahrenheit" android:textColor="@color/dial_warm_ivory" />
-    </RadioGroup>
+            <TextView
+                android:id="@+id/labelLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dial Logo"
+                android:textColor="@color/dial_warm_ivory"
+                android:textStyle="bold" />
 
+            <RadioGroup
+                android:id="@+id/rgLogo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+                <RadioButton
+                    android:id="@+id/rbLogoNone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Off"
+                    android:textColor="@color/dial_warm_ivory" />
+                <RadioButton
+                    android:id="@+id/rbLogoIwc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="IWC"
+                    android:textColor="@color/dial_warm_ivory" />
+                <RadioButton
+                    android:id="@+id/rbLogoMercedes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mercedes"
+                    android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchMinuteRing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show Minute Ring"
+                android:textColor="@color/dial_warm_ivory"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/labelBezel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Minute Ring Color"
+                android:textColor="@color/dial_warm_ivory"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/rgBezelColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="12dp">
+                <RadioButton android:id="@+id/rbBezelRed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Red" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbBezelSilver" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Silver" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbBezelBlue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Blue" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbBezelGold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Gold" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbBezelWhite" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="White" android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
+
+            <!-- Luminescent Glow Toggle -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchLume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_lume"
+                android:textColor="@color/dial_warm_ivory"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/labelLumeColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lume Color"
+                android:textColor="@color/dial_warm_ivory"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/rgLumeColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="12dp">
+                <RadioButton android:id="@+id/rbLumeGreen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Emerald green" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbLumeBlue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ice blue" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbLumeSolar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Solar amber" android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchWeather"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show local weather (uses device location)"
+                android:textColor="@color/dial_warm_ivory"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchWeatherIcon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show Weather Icon"
+                android:textColor="@color/dial_warm_ivory" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchWeatherCondition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show Weather Condition"
+                android:textColor="@color/dial_warm_ivory" />
+
+            <RadioGroup
+                android:id="@+id/rgWeatherUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+                <RadioButton android:id="@+id/rbCelsius" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Celsius" android:textColor="@color/dial_warm_ivory" />
+                <RadioButton android:id="@+id/rbFahrenheit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Fahrenheit" android:textColor="@color/dial_warm_ivory" />
+            </RadioGroup>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
-</ScrollView>
-

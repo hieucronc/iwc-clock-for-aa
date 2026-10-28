@@ -122,18 +122,29 @@ class MercedesDigitalClockView @JvmOverloads constructor(
         calendar.timeInMillis = System.currentTimeMillis()
         val currentPrefs = prefs ?: fallbackPrefs
 
-        // Background
-        // Analog dial themes do not tint the digital display.
-        val (bgColor, textColor, secColor) = Triple(
-            Color.parseColor("#07080A"), Color.parseColor("#F4EFE6"), Color.parseColor("#8E9299")
-        )
-
+        val textColor = colorFor(currentPrefs.digitalColor)
+        val hourColor = colorFor(currentPrefs.digitalHourColor)
+        val minuteColor = colorFor(currentPrefs.digitalMinuteColor)
+        val separatorColor = colorFor(currentPrefs.digitalSeparatorColor)
+        val secondColor = colorFor(currentPrefs.digitalSecondColor)
+        val bgColor = Color.parseColor("#07080A")
         canvas.drawColor(bgColor)
+        drawPattern(canvas, width, height, currentPrefs.digitalPattern)
 
+        val font = when (currentPrefs.digitalFont) {
+            DigitalFont.MONOSPACE -> "sans-serif-monospace"
+            DigitalFont.SERIF -> "serif"
+            else -> "sans-serif"
+        }
+        val fontStyle = (if (currentPrefs.digitalBold) Typeface.BOLD else Typeface.NORMAL) or
+            (if (currentPrefs.digitalItalic) Typeface.ITALIC else Typeface.NORMAL)
+        timePaint.typeface = Typeface.create(font, fontStyle)
+        secondsPaint.typeface = Typeface.create(font, fontStyle)
         timePaint.color = textColor
-        secondsPaint.color = secColor
         datePaint.color = intColorWithAlpha(textColor, 180)
         weatherPaint.color = intColorWithAlpha(textColor, 200)
+        val secColor = intColorWithAlpha(secondColor, 200)
+        secondsPaint.color = secColor
 
         // Time calculations
         val hour = if (currentPrefs.is24HourFormat) {
@@ -145,7 +156,9 @@ class MercedesDigitalClockView @JvmOverloads constructor(
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
 
-        val timeString = String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
+        val hourString = String.format(Locale.getDefault(), "%02d", hour)
+        val minuteString = String.format(Locale.getDefault(), "%02d", minute)
+        val separatorString = ":"
         val secondsString = String.format(Locale.getDefault(), ":%02d", second)
 
         val baseDim = min(width * 0.35f, height * 0.55f)
@@ -161,21 +174,34 @@ class MercedesDigitalClockView @JvmOverloads constructor(
         }
 
         val bounds = Rect()
-        timePaint.getTextBounds(timeString, 0, timeString.length, bounds)
+        timePaint.getTextBounds(hourString, 0, hourString.length, bounds)
         val textHeight = bounds.height()
 
         val drawY = centerY + textHeight / 2f
         if (currentPrefs.showSeconds) {
-            val secOffset = timePaint.measureText(timeString) / 2f
-            canvas.drawText(timeString, centerX - baseDim * 0.15f, drawY, timePaint)
-            canvas.drawText(
-                secondsString,
-                centerX - baseDim * 0.15f + secOffset + 12f,
-                drawY - (textHeight * 0.28f),
-                secondsPaint
-            )
+            // Center the combined time/seconds block and shrink it to fit narrow screens and preview.
+            val hourWidth = timePaint.measureText(hourString)
+            val minuteWidth = timePaint.measureText(minuteString)
+            val sepWidth = timePaint.measureText(separatorString)
+            val secondsWidth = secondsPaint.measureText(secondsString)
+            val gap = baseDim * 0.025f
+            val totalWidth = hourWidth + sepWidth + minuteWidth + gap + secondsWidth
+            val fit = (width * 0.92f / totalWidth).coerceAtMost(1f)
+            canvas.save()
+            canvas.scale(fit, fit, centerX, centerY)
+            val left = centerX - totalWidth / 2f
+            timePaint.color = hourColor; canvas.drawText(hourString, left + hourWidth/2f, drawY, timePaint)
+            timePaint.color = separatorColor; canvas.drawText(separatorString, left + hourWidth + sepWidth/2f, drawY, timePaint)
+            timePaint.color = minuteColor; canvas.drawText(minuteString, left + hourWidth + sepWidth + minuteWidth/2f, drawY, timePaint)
+            secondsPaint.color = secColor
+            canvas.drawText(secondsString, left + hourWidth + sepWidth + minuteWidth + gap, drawY - (textHeight * 0.28f), secondsPaint)
+            canvas.restore()
         } else {
-            canvas.drawText(timeString, centerX, drawY, timePaint)
+            val hourWidth = timePaint.measureText(hourString); val sepWidth=timePaint.measureText(separatorString); val minuteWidth=timePaint.measureText(minuteString)
+            val left=centerX-(hourWidth+sepWidth+minuteWidth)/2f
+            timePaint.color=hourColor; canvas.drawText(hourString,left+hourWidth/2f,drawY,timePaint)
+            timePaint.color=separatorColor; canvas.drawText(separatorString,left+hourWidth+sepWidth/2f,drawY,timePaint)
+            timePaint.color=minuteColor; canvas.drawText(minuteString,left+hourWidth+sepWidth+minuteWidth/2f,drawY,timePaint)
         }
 
         if (currentPrefs.showDate) {
@@ -194,5 +220,17 @@ class MercedesDigitalClockView @JvmOverloads constructor(
 
     private fun intColorWithAlpha(color: Int, alpha: Int): Int {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
+    }
+
+    private fun colorFor(color: DigitalColor): Int = when (color) {
+        DigitalColor.WHITE -> Color.WHITE
+        DigitalColor.CYAN -> Color.rgb(88, 220, 255)
+        DigitalColor.AMBER -> Color.rgb(255, 190, 80)
+        DigitalColor.RED -> Color.rgb(255, 90, 85)
+        DigitalColor.IVORY -> Color.parseColor("#F4EFE6")
+    }
+
+    private fun drawPattern(canvas: Canvas, width: Float, height: Float, pattern: DigitalPattern) {
+        TelemetryPainter.drawPattern(canvas, RectF(0f, 0f, width, height), pattern)
     }
 }

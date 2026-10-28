@@ -2,6 +2,7 @@ package com.mercedes.minimalclock.auto
 
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
+import androidx.car.app.ScreenManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
@@ -13,6 +14,10 @@ import com.mercedes.minimalclock.ClockLogo
 import com.mercedes.minimalclock.ClockPreferences
 import com.mercedes.minimalclock.ClockStyle
 import com.mercedes.minimalclock.ClockTheme
+import com.mercedes.minimalclock.AnalogFaceStyle
+import com.mercedes.minimalclock.DigitalColor
+import com.mercedes.minimalclock.DigitalFont
+import com.mercedes.minimalclock.DigitalPattern
 import com.mercedes.minimalclock.LumeColor
 import com.mercedes.minimalclock.R
 import com.mercedes.minimalclock.WeatherService
@@ -20,7 +25,8 @@ import com.mercedes.minimalclock.WeatherService
 class MercedesClockSettingsScreen(
     carContext: CarContext,
     private val prefs: ClockPreferences,
-    private val onSettingsChanged: () -> Unit
+    private val onSettingsChanged: () -> Unit,
+    private val onRequestTelemetryPermission: () -> Unit
 ) : Screen(carContext) {
 
     override fun onGetTemplate(): Template {
@@ -45,6 +51,22 @@ class MercedesClockSettingsScreen(
         } else {
             addDigitalSettings(list)
         }
+        list.addItem(toggleRow("Driving information panel", prefs.tachometerEnabled) {
+            prefs.tachometerEnabled = it
+        })
+        if (prefs.tachometerEnabled) {
+            list.addItem(
+                Row.Builder()
+                    .setTitle("Telemetry fields")
+                    .addText("Choose which readings appear")
+                    .setOnClickListener {
+                        carContext.getCarService(ScreenManager::class.java).push(
+                            MercedesTelemetrySettingsScreen(carContext, prefs, onSettingsChanged, onRequestTelemetryPermission)
+                        )
+                    }
+                    .build()
+            )
+        }
 
         return ListTemplate.Builder()
             .setTitle("Settings")
@@ -54,41 +76,53 @@ class MercedesClockSettingsScreen(
     }
 
     private fun addAnalogSettings(list: ItemList.Builder) {
-        list.addItem(
-            choiceRow(carContext.getString(R.string.theme_title), prefs.theme.label(carContext)) {
-                prefs.theme = ClockTheme.values().nextAfter(prefs.theme)
-            }
-        )
-        list.addItem(
-            choiceRow("Dial Logo", prefs.logo.label()) {
-                prefs.logo = ClockLogo.values().nextAfter(prefs.logo)
-            }
-        )
-        list.addItem(toggleRow("Show Minute Ring", prefs.showMinuteRing) { prefs.showMinuteRing = it })
-        list.addItem(
-            choiceRow("Minute Ring Color", prefs.bezelColor.label()) {
-                prefs.bezelColor = BezelColor.values().nextAfter(prefs.bezelColor)
-            }
-        )
-        list.addItem(toggleRow(carContext.getString(R.string.show_lume), prefs.showLume) { prefs.showLume = it })
-        list.addItem(
-            choiceRow("Lume Color", prefs.lumeColor.label()) {
-                prefs.lumeColor = LumeColor.values().nextAfter(prefs.lumeColor)
-            }
-        )
-        list.addItem(
-            toggleRow(carContext.getString(R.string.show_seconds), prefs.showSeconds) {
-                prefs.showSeconds = it
-            }
-        )
-        list.addItem(
-            toggleRow(carContext.getString(R.string.show_date), prefs.showDate) {
-                prefs.showDate = it
-            }
-        )
+        list.addItem(choiceRow("Analog face style", prefs.analogFaceStyle.label()) {
+            prefs.analogFaceStyle = if (prefs.analogFaceStyle == AnalogFaceStyle.MERCEDES) AnalogFaceStyle.MODERN else AnalogFaceStyle.MERCEDES
+        })
+        if (prefs.analogFaceStyle == AnalogFaceStyle.MERCEDES) {
+            list.addItem(
+                choiceRow(carContext.getString(R.string.theme_title), prefs.theme.label(carContext)) {
+                    prefs.theme = ClockTheme.values().nextAfter(prefs.theme)
+                }
+            )
+            list.addItem(
+                choiceRow("Dial Logo", prefs.logo.label()) {
+                    prefs.logo = ClockLogo.values().nextAfter(prefs.logo)
+                }
+            )
+            list.addItem(toggleRow("Show Minute Ring", prefs.showMinuteRing) { prefs.showMinuteRing = it })
+            list.addItem(
+                choiceRow("Minute Ring Color", prefs.bezelColor.label()) {
+                    prefs.bezelColor = BezelColor.values().nextAfter(prefs.bezelColor)
+                }
+            )
+            list.addItem(toggleRow(carContext.getString(R.string.show_lume), prefs.showLume) { prefs.showLume = it })
+            list.addItem(
+                choiceRow("Lume Color", prefs.lumeColor.label()) {
+                    prefs.lumeColor = LumeColor.values().nextAfter(prefs.lumeColor)
+                }
+            )
+        }
+        list.addItem(toggleRow(carContext.getString(R.string.show_seconds), prefs.showSeconds) { prefs.showSeconds = it })
+        list.addItem(toggleRow(carContext.getString(R.string.show_date), prefs.showDate) { prefs.showDate = it })
     }
 
     private fun addDigitalSettings(list: ItemList.Builder) {
+        list.addItem(toggleRow("Bold digital text", prefs.digitalBold) { prefs.digitalBold = it })
+        list.addItem(toggleRow("Italic digital text", prefs.digitalItalic) { prefs.digitalItalic = it })
+        list.addItem(choiceRow("Digital font", prefs.digitalFont.label()) {
+            prefs.digitalFont = DigitalFont.values().nextAfter(prefs.digitalFont)
+        })
+        list.addItem(choiceRow("All time parts color", prefs.digitalColor.label()) {
+            prefs.digitalColor = DigitalColor.values().nextAfter(prefs.digitalColor)
+        })
+        list.addItem(choiceRow("Hour color", prefs.digitalHourColor.label()) { prefs.digitalHourColor = DigitalColor.values().nextAfter(prefs.digitalHourColor) })
+        list.addItem(choiceRow("Minute color", prefs.digitalMinuteColor.label()) { prefs.digitalMinuteColor = DigitalColor.values().nextAfter(prefs.digitalMinuteColor) })
+        list.addItem(choiceRow("Seconds color", prefs.digitalSecondColor.label()) { prefs.digitalSecondColor = DigitalColor.values().nextAfter(prefs.digitalSecondColor) })
+        list.addItem(choiceRow("Colon color", prefs.digitalSeparatorColor.label()) { prefs.digitalSeparatorColor = DigitalColor.values().nextAfter(prefs.digitalSeparatorColor) })
+        list.addItem(choiceRow("Digital background", prefs.digitalPattern.label()) {
+            prefs.digitalPattern = DigitalPattern.values().nextAfter(prefs.digitalPattern)
+        })
         list.addItem(
             toggleRow(carContext.getString(R.string.time_format_24), prefs.is24HourFormat) {
                 prefs.is24HourFormat = it
@@ -186,6 +220,36 @@ private fun LumeColor.label() = when (this) {
     LumeColor.GREEN -> "Emerald green"
     LumeColor.BLUE -> "Ice blue"
     LumeColor.SOLAR -> "Solar amber"
+}
+
+private fun DigitalFont.label() = when (this) {
+    DigitalFont.SANS -> "Sans"
+    DigitalFont.MONOSPACE -> "Monospace"
+    DigitalFont.SERIF -> "Serif"
+}
+
+private fun DigitalColor.label() = when (this) {
+    DigitalColor.IVORY -> "Ivory"
+    DigitalColor.WHITE -> "White"
+    DigitalColor.CYAN -> "Cyan"
+    DigitalColor.AMBER -> "Amber"
+    DigitalColor.RED -> "Red"
+}
+
+private fun AnalogFaceStyle.label() = when (this) {
+    AnalogFaceStyle.MERCEDES -> "Mercedes"
+    AnalogFaceStyle.MODERN -> "Modern"
+}
+
+
+private fun DigitalPattern.label() = when (this) {
+    DigitalPattern.SOLID -> "Solid"
+    DigitalPattern.GRID -> "Grid"
+    DigitalPattern.CARBON -> "Carbon"
+    DigitalPattern.SCANLINES -> "Scanlines"
+    DigitalPattern.BLUEPRINT -> "Blueprint"
+    DigitalPattern.DOT_MATRIX -> "Dot matrix"
+    DigitalPattern.HEXAGON -> "Hexagon"
 }
 
 private fun <T : Enum<T>> Array<T>.nextAfter(value: T): T {

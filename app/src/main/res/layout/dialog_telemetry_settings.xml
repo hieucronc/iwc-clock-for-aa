@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bezel_inner">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Telemetry display fields"
+            android:textColor="@color/dial_warm_ivory"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/showTelemetrySpeed" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Current speed" android:textColor="@color/dial_warm_ivory" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/showTelemetryAcceleration" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Acceleration" android:textColor="@color/dial_warm_ivory" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/showTelemetryZeroToHundred" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="0–100 km/h time" android:textColor="@color/dial_warm_ivory" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/showTelemetryMaxSpeed" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Maximum speed" android:textColor="@color/dial_warm_ivory" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/showTelemetryAltitude" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Altitude" android:textColor="@color/dial_warm_ivory" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/showTelemetryHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Heading" android:textColor="@color/dial_warm_ivory" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/showTelemetryGForce" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="G-force" android:textColor="@color/dial_warm_ivory" />
+    </LinearLayout>
+</ScrollView>

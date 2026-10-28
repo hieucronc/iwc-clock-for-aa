@@ -7,7 +7,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 /**
- * Shared high-fidelity renderer for the IWC Schaffhausen C-Class W205 Saddle Clock.
+ * Shared renderer for the Mercedes and modern flat analog clock faces.
  *
  * Renders on both:
  * 1. Phone UI [IwcAnalogClockView]
@@ -158,7 +158,69 @@ class IwcClockPainter {
         val radius = min(w, h) * 0.44f
         val cy = maxOf(h * centerYFactor, radius * 1.15f + 2f)
 
-        drawReferenceClock(canvas, cx, cy, radius, prefs, calendar)
+        if (prefs.analogFaceStyle == AnalogFaceStyle.MODERN) {
+            drawModernClock(canvas, cx, cy, radius, prefs, calendar)
+        } else {
+            drawReferenceClock(canvas, cx, cy, radius, prefs, calendar)
+        }
+    }
+
+    /** Flat, high-contrast dial inspired by modern phone/watch faces. */
+    private fun drawModernClock(canvas: Canvas, cx: Float, cy: Float, r: Float, prefs: ClockPreferences, calendar: Calendar) {
+        canvas.drawColor(Color.BLACK)
+        val mainColor = Color.rgb(190, 191, 194)
+        val accentColor = Color.rgb(255, 26, 55)
+        val dimColor = Color.rgb(76, 78, 82)
+        val tickPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = dimColor
+            strokeCap = Paint.Cap.ROUND
+            strokeWidth = r * .012f
+        }
+        for (i in 0 until 60) {
+            val angle = Math.toRadians(i * 6.0 - 90.0)
+            val inner = if (i % 5 == 0) r * .82f else r * .895f
+            val outer = if (i % 5 == 0) r * .96f else r * .95f
+            canvas.drawLine(
+                cx + cos(angle).toFloat() * inner, cy + sin(angle).toFloat() * inner,
+                cx + cos(angle).toFloat() * outer, cy + sin(angle).toFloat() * outer, tickPaint
+            )
+        }
+
+        val markerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = mainColor; strokeCap = Paint.Cap.ROUND; strokeWidth = r * .055f }
+        for (i in 0 until 12) {
+            val angle = Math.toRadians(i * 30.0 - 90.0)
+            val outer = r * .82f
+            val inner = r * if (i % 3 == 0) .64f else .70f
+            canvas.drawLine(cx + cos(angle).toFloat() * inner, cy + sin(angle).toFloat() * inner,
+                cx + cos(angle).toFloat() * outer, cy + sin(angle).toFloat() * outer, markerPaint)
+        }
+
+        val minute = calendar.get(Calendar.MINUTE) + calendar.get(Calendar.SECOND) / 60f
+        val hour = calendar.get(Calendar.HOUR) % 12 + minute / 60f
+        fun drawHand(angleDegrees: Float, length: Float, width: Float, color: Int) {
+            val angle = Math.toRadians(angleDegrees - 90.0)
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                this.color = color
+                strokeWidth = width
+                strokeCap = Paint.Cap.ROUND
+            }
+            canvas.drawLine(cx, cy, cx + cos(angle).toFloat() * length, cy + sin(angle).toFloat() * length, paint)
+        }
+        drawHand(hour * 30f, r * .48f, r * .075f, Color.WHITE)
+        drawHand(minute * 6f, r * .72f, r * .052f, Color.WHITE)
+        if (prefs.showSeconds) drawHand(calendar.get(Calendar.SECOND) * 6f, r * .91f, r * .012f, accentColor)
+
+        canvas.drawCircle(cx, cy, r * .045f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE })
+        canvas.drawCircle(cx, cy, r * .018f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = accentColor })
+        if (prefs.showDate) {
+            val datePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = accentColor
+                textSize = r * .20f
+                textAlign = Paint.Align.CENTER
+                typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+            }
+            canvas.drawText(String.format(Locale.getDefault(), "%02d", calendar.get(Calendar.DAY_OF_MONTH)), cx + r * .34f, cy + r * .10f, datePaint)
+        }
     }
 
     private fun drawReferenceClock(canvas: Canvas, cx: Float, cy: Float, radius: Float, prefs: ClockPreferences, calendar: Calendar) {
@@ -321,7 +383,7 @@ class IwcClockPainter {
             tick.color = if (major && showMinuteRing) accent else if (silver) {
                 if (major) Color.parseColor("#334155") else Color.parseColor("#64748B")
             } else if (major) Color.parseColor("#F8FAFC") else Color.parseColor("#94A3B8")
-            tick.strokeWidth = (if (major) 2.4f else 1.1f) * unit
+            tick.strokeWidth = (if (major && showMinuteRing) 2.8f else if (major) 2.4f else 1.1f) * unit
             canvas.drawLine(cx + cos(a).toFloat() * start, cy + sin(a).toFloat() * start, cx + cos(a).toFloat() * end, cy + sin(a).toFloat() * end, tick)
             if (major && showMinuteRing) {
                 canvas.save()
